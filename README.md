@@ -3,7 +3,6 @@
 </p>
 
 # GitHub Actions Workshop
-[![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
 [![License](https://img.shields.io/github/license/akatief/actions-workshop)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/akatief/actions-workshop/actions/workflows/main.yml/badge.svg)](https://github.com/akatief/actions-workshop/actions/workflows/main.yml)
