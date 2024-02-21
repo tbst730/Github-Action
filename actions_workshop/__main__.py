@@ -1,9 +1,9 @@
+import argparse
 from PIL import Image, ImageDraw, ImageFont
-import os
 
-def add_version_text(image_path, version):
+def add_version_text(version, base_logo, new_logo):
     # Load the image
-    image = Image.open(image_path)
+    image = Image.open(base_logo)
     
     # Create a new image with additional space at the bottom for the version text
     new_height = image.height  # Adjust as needed
@@ -17,9 +17,6 @@ def add_version_text(image_path, version):
     text = f"Version: {version}"
     text_bbox = draw.textbbox((0, 0), text, font=font)
     text_width = text_bbox[2] - text_bbox[0]
-    text_height = text_bbox[3] - text_bbox[1]
-    print(f"Text width: {text_width}, Text height: {text_height}")
-    print(f"Image width: {image.width}, Image height: {image.height}")
     x = (image.width - text_width) // 2  # Adjust as needed
     y = image.height - 150  # Adjust as needed
 
@@ -27,20 +24,26 @@ def add_version_text(image_path, version):
     draw.text((x, y), text, fill=text_color, font=font)  
 
     # Save the modified image
-    base_path, ext = os.path.splitext(image_path)
-    output_path = "logo.png" 
+    output_path = new_logo 
     new_image.save(output_path)
     
     print(f"Version text added. Image saved to: {output_path}")
 
-# Call this using `python -m actions_workshop` and `$ actions_workshop `.
 if __name__ == "__main__":
-    # Path to the logo image
-    logo_path = "logo_base.png"
+    # Create argument parser
+    parser = argparse.ArgumentParser(description='Add version text to logo image')
     
+    # Add arguments
+    parser.add_argument('--version', dest='version', type=str, help='Path to the version file')
+    parser.add_argument('--base-logo', dest='base_logo', type=str, help='Path to the base logo image')
+    parser.add_argument('--new-logo', dest='new_logo', type=str, help='Path to save the new logo image')
+    
+    # Parse arguments
+    args = parser.parse_args()
+
     # Load the version from the VERSION file
-    with open('VERSION', 'r') as f:
+    with open(args.version, 'r') as f:
         version = f.read().strip()
     
-    # Add version to image
-    add_version_text(logo_path, version)
+    # Call main function with arguments
+    add_version_text(version, args.base_logo, args.new_logo)
