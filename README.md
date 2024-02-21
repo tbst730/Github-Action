@@ -2,105 +2,63 @@
   <img src='logo.png' width='200'>
 </p>
 
-# actions_workshop
+# GitHub Actions Workshop
 [![Arxiv](https://img.shields.io/badge/Arxiv-YYMM.NNNNN-red?style=flat-square&logo=arxiv&logoColor=white)](https://put-here-your-paper.com)
 [![License](https://img.shields.io/github/license/akatief/actions-workshop)](https://opensource.org/licenses/Apache-2.0)
 [![Python Versions](https://img.shields.io/badge/Python-3.9-blue.svg?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![CI](https://github.com/akatief/actions-workshop/actions/workflows/main.yml/badge.svg)](https://github.com/akatief/actions-workshop/actions/workflows/main.yml)
 
-This is the official template for new Python projects at UKP Lab. It was adapted for the needs of UKP Lab from the excellent [python-project-template](https://github.com/rochacbruno/python-project-template/) by [rochacbruno](https://github.com/rochacbruno).
-
-It should help you start your project and give you continuous status updates on the development through [GitHub Actions](https://docs.github.com/en/actions).
-
-> **Abstract:** The study of natural language processing (NLP) has gained increasing importance in recent years, with applications ranging from machine translation to sentiment analysis. Properly managing Python projects in this domain is of paramount importance to ensure reproducibility and facilitate collaboration. The template provides a structured starting point for projects and offers continuous status updates on development through GitHub Actions. Key features include a basic setup.py file for installation, packaging, and distribution, documentation structure using mkdocs, testing structure using pytest, code linting with pylint, and entry points for executing the program with basic CLI argument parsing. Additionally, the template incorporates continuous integration using GitHub Actions with jobs to check, lint, and test the project, ensuring robustness and reliability throughout the development process.
-
-Contact person: [Federico Tiblias](mailto:federico.tiblias@tu-darmstadt.de) 
-
-[UKP Lab](https://www.ukp.tu-darmstadt.de/) | [TU Darmstadt](https://www.tu-darmstadt.de/
-)
-
-Don't hesitate to send us an e-mail or report an issue, if something is broken (and it shouldn't be) or if you have further questions.
-
+This is a small workshop teaching how to use [GitHub Actions](https://docs.github.com/en/actions)! You will implement a small action to bump the version of this package and update the logo accordingly. 
 
 ## Getting Started
 
-> **DO NOT CLONE OR FORK**
+Follow these steps to start working on the workshop:
 
-If you want to set up this template:
-
-1. Request a repository on UKP Lab's GitHub by following the standard procedure on the wiki. It will install the template directly. Alternatively, set it up in your personal GitHub account by clicking **[Use this template](https://github.com/rochacbruno/python-project-template/generate)**.
-2. Wait until the first run of CI finishes. Github Actions will commit to your new repo with a "✅ Ready to clone and code" message.
-3. Delete optional files: 
-    - If you don't need automatic documentation generation, you can delete folder `docs`, file `.github\workflows\docs.yml` and `mkdocs.yml`
-    - If you don't want automatic testing, you can delete folder `tests` and file `.github\workflows\tests.yml`
-4. Prepare a virtual environment:
+1. Clone this repository on your device.
+2. Create a new repository in your personal GitHub account and push the files there. It's important that the repository is set to public.
+3. Prepare a virtual environment:
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install .
-pip install -r requirements-dev.txt # Only needed for development
+pip install -r requirements-dev.txt
 ```
-5. Adapt anything else (for example this file) to your project. 
 
-6. Read the file [ABOUT_THIS_TEMPLATE.md](ABOUT_THIS_TEMPLATE.md)  for more information about development.
+Done!
 
-## Usage
+## Task 1 - Bumping versions
 
-### Using the classes
+### Objective
 
-This is how you can use classes inside `actions_workshop`: 
+Software packages are usually identified by a version number. After every update to the package it's important to update this number to distinguish different development stages of the software and make sure you're installing the right version. A problem arises: updating the version number manually is tedious and if you forget to do it you end up with different releases of your software with the same ID.
 
-```py
-from actions_workshop import BaseClass
-from actions_workshop import base_function
+Your first task is to automatize the update of version number ("bumping"). This repository's version is contained in the `VERSION` file. Create a GitHub Action in the `.github/workflows` folder that bumps the version at every commit that gets pushed on GitHub.
 
-BaseClass().base_method()
-base_function()
-```
-### Using scripts
+### Setting up the Action
 
-This is how you can use `actions_workshop` from command line:
+Actions work by creating a small virtual machine on GitHub's server and then execute some commands. This VM is a blank slate and doesn't contain anything, not even the files of your repository. The first step of a GitHub Action therefore is to clone the repo inside the VM.
+Worry not! You don't have to write a bash script from scratch, someone has already thought about that and has prepared a plug-and-play [checkout](https://github.com/actions/checkout) action. Simply include it in your GitHub Action `.yml` file.
 
+Just setting up the repository is not enough! You also need to setup Python! Do the same thing with an off the shelf [setup-python action](https://github.com/actions/setup-python).
+
+> SPOILER: You can see this in use in `.github/workflows/main.yml`
+
+### Bump Version Action
+
+Bumping version is a repetitive task, so someone has indeed already automatized it [here](https://github.com/marketplace/actions/bump-versions). This script updates the `VERSION` file and commits to GitHub. You can include it in the same way as Checkout Action. 
+
+## Task 2 - Displaying version in the logo
+
+We learned how to bump the version, that's great, but there's a problem! The `logo.png` is still stuck at the previous version number. We now want to read the `VERSION` file and write the version at the bottom of `logo_base.png` overwriting the `logo.png` with the old number. Of course, we want to do this automagically through GitHub Actions, but there is no action that can help us this time. We will create our own.
+
+### Updating the logo.png file
+
+Conveniently, the Python package actions workshop contains a script to attach a version number to an image. To call this you can simply use:
 ```bash
-$ python -m actions_workshop
+python -m actions_workshop --version VERSION --base-logo logo_base.png --new-logo logo.png
 ```
+This is great, but it's not enough! You also need to include this in your Action as a new step. Remember, you can use a GitHub Action as if it was a bash script. Don't forget to checkout your repository and install Python!
 
-### Expected results
+### Committing changes
 
-After running the experiments, you should expect the following results:
-
-(Feel free to describe your expected results here...)
-
-### Parameter description
-
-* `x, --xxxx`: This parameter does something nice
-
-* ...
-
-* `z, --zzzz`: This parameter does something even nicer
-
-## Development
-
-Read the FAQs in [ABOUT_THIS_TEMPLATE.md](ABOUT_THIS_TEMPLATE.md) to learn more about how this template works and where you should put your classes & methods. Make sure you've correctly installed `requirements-dev.txt` dependencies
-
-## Cite
-
-Please use the following citation:
-
-```
-@InProceedings{smith:20xx:CONFERENCE_TITLE,
-  author    = {Smith, John},
-  title     = {My Paper Title},
-  booktitle = {Proceedings of the 20XX Conference on XXXX},
-  month     = mmm,
-  year      = {20xx},
-  address   = {Gotham City, USA},
-  publisher = {Association for XXX},
-  pages     = {XXXX--XXXX},
-  url       = {http://xxxx.xxx}
-}
-```
-
-## Disclaimer
-
-> This repository contains experimental software and is published for the sole purpose of giving additional background details on the respective publication. 
+Finally, you need to commit the logo change. Again, this can be done with an off the shelf [action](https://github.com/marketplace/actions/git-auto-commit).
