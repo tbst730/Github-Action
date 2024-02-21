@@ -33,6 +33,7 @@ setup(
     name="actions_workshop",
     url="https://github.com/akatief/actions-workshop/",
     long_description=read("README.md"),
+    version=read("VERSION"),
     long_description_content_type="text/markdown",
     author="author_name",
     packages=find_packages(exclude=["tests", ".github"]),
