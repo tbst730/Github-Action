@@ -19,3 +19,6 @@ jobs:
             version_file: ./VERSION
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Update logo
+        run:
+          python -m actions_workshop --version VERSION --base-logo logo_base.png --new-logo logo.png
